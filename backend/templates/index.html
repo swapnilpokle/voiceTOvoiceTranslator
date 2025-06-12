@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalkLingo - Multilingual Realtime Translator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* Header styles */
+        header {
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            border-radius: 50%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            color: #666;
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+        
+        /* Main content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        /* Language selector */
+        .language-selector {
+            text-align: left;
+        }
+        
+        .language-selector label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #333;
+            font-size: 1rem;
+        }
+        
+        .language-selector select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            background-color: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .language-selector select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        /* Recording section */
+        .recording-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn.recording {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+        
+        /* Recording status */
+        .recording-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+        
+        .pulse {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #28a745;
+            transition: all 0.3s ease;
+        }
+        
+        .pulse.recording {
+            background-color: #ff6b6b;
+            animation: pulse-dot 1s infinite;
+        }
+        
+        .pulse.processing {
+            background-color: #ffc107;
+            animation: pulse-dot 1s infinite;
+        }
+        
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        #status-text {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Results section */
+        .results {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+        
+        .results:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .result-box {
+            margin-bottom: 20px;
+        }
+        
+        .result-box:last-child {
+            margin-bottom: 0;
+        }
+        
+        .result-box h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .result-box p {
+            background-color: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            min-height: 50px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        
+        .result-box small {
+            display: block;
+            margin-top: 8px;
+            color: #6c757d;
+            font-style: italic;
+            font-size: 12px;
+        }
+        
+        /* Audio player */
+        .audio-player {
+            margin-top: 10px;
+        }
+        
+        .audio-player audio {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Loading spinner */
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ffffff40;
+            border-top: 2px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Hidden class */
+        .hidden {
+            display: none;
+        }
+        
+        /* Error states */
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        
+        .success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .btn {
+                padding: 12px 30px;
+                font-size: 16px;
+            }
+            
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tagline {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="/static/images/logo.png" alt="TalkLingo Logo" class="logo" onerror="this.style.display='none'">
+            <h1>🗣️ TalkLingo</h1>
+            <p class="tagline">Break language barriers in real-time</p>
+        </header>
+
+        <div class="main-content">
+            <div class="language-selector">
+                <label for="target-language">Translate to:</label>
+                <select id="target-language" name="target_lang">
+                    <option value="hi">Hindi (हिंदी)</option>
+                    <option value="mr">Marathi (मराठी)</option>
+                    <option value="ta">Tamil (தமிழ்)</option>
+                    <option value="te">Telugu (తెలుగు)</option>
+                    <option value="kn">Kannada (ಕನ್ನಡ)</option>
+                    <option value="gu">Gujarati (ગુજરાતી)</option>
+                    <option value="en">English</option>
+                    <option value="es">Spanish (Español)</option>
+                    <option value="fr">French (Français)</option>
+                    <option value="de">German (Deutsch)</option>
+                    <option value="it">Italian (Italiano)</option>
+                    <option value="pt">Portuguese (Português)</option>
+                    
+                </select>
+            </div>
+
+            <div class="recording-section">
+                <button id="record-btn" class="btn">🎤 Start Recording (5 seconds)</button>
+                <div class="recording-status">
+                    <div class="pulse"></div>
+                    <span id="status-text">Ready to record</span>
+                </div>
+            </div>
+
+            <div id="results" class="results hidden">
+                <div class="result-box">
+                    <h3>📝 Original Text</h3>
+                    <p id="original-text">--</p>
+                    <small id="detected-language"></small>
+                </div>
+                
+                <div class="result-box">
+                    <h3>🌐 Translation</h3>
+                    <p id="translated-text">--</p>
+                </div>
+                
+                <div class="result-box">
+                    <h3>🔊 Audio Output</h3>
+                    <div class="audio-player">
+                        <audio id="translation-audio" controls style="display: none;"></audio>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    // DOM Elements
+    const recordBtn = document.getElementById('record-btn');
+    const statusText = document.getElementById('status-text');
+    const pulseIndicator = document.querySelector('.pulse');
+    const targetLanguageSelect = document.getElementById('target-language');
+    const originalText = document.getElementById('original-text');
+    const translatedText = document.getElementById('translated-text');
+    const detectedLanguage = document.getElementById('detected-language');
+    const translationAudio = document.getElementById('translation-audio');
+    const results = document.getElementById('results');
+
+    const languageNames = {
+        'hi': 'Hindi', 'mr': 'Marathi', 'ta': 'Tamil', 'te': 'Telugu', 'kn': 'Kannada',
+        'gu': 'Gujarati', 'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German',
+        'it': 'Italian', 'pt': 'Portuguese', 'ru': 'Russian', 'ja': 'Japanese',
+        'ko': 'Korean', 'zh': 'Chinese', 'ar': 'Arabic'
+    };
+
+    let mediaRecorder;
+    let audioChunks = [];
+
+    function updateStatus(message, type = 'default') {
+        statusText.textContent = message;
+        pulseIndicator.classList.remove('recording', 'processing');
+        if (type === 'recording') pulseIndicator.classList.add('recording');
+        if (type === 'processing') pulseIndicator.classList.add('processing');
+    }
+
+    function updateButtonState(state) {
+        recordBtn.classList.remove('recording');
+        if (state === 'recording') {
+            recordBtn.innerHTML = '🔴 Recording... (5s)';
+            recordBtn.classList.add('recording');
+            recordBtn.disabled = true;
+        } else if (state === 'processing') {
+            recordBtn.innerHTML = '<span class="loading"></span>Processing...';
+            recordBtn.disabled = true;
+        } else {
+            recordBtn.innerHTML = '🎤 Start Recording (5 seconds)';
+            recordBtn.disabled = false;
+        }
+    }
+
+    function clearResults() {
+        originalText.textContent = '--';
+        translatedText.textContent = '--';
+        detectedLanguage.textContent = '';
+        translationAudio.style.display = 'none';
+        translationAudio.src = '';
+        results.classList.add('hidden');
+    }
+
+    function displayResults(data) {
+        originalText.textContent = data.original_text || 'No text detected';
+        translatedText.textContent = data.translated_text || 'Translation failed';
+        if (data.detected_language) {
+            const langName = languageNames[data.detected_language] || data.detected_language;
+            detectedLanguage.textContent = `Detected: ${langName}`;
+        }
+        if (data.audio_output) {
+            translationAudio.src = data.audio_output;
+            translationAudio.style.display = 'block';
+        }
+        results.classList.remove('hidden');
+    }
+
+    function showError(message) {
+        originalText.textContent = 'Error occurred';
+        translatedText.textContent = message;
+        detectedLanguage.textContent = '';
+        results.classList.remove('hidden');
+        results.style.backgroundColor = '#f8d7da';
+        results.style.borderColor = '#f5c6cb';
+        setTimeout(() => {
+            results.style.backgroundColor = '#f8f9fa';
+            results.style.borderColor = '#e9ecef';
+        }, 3000);
+    }
+
+    async function startRecordingAndTranslation() {
+        try {
+            clearResults();
+            updateStatus('🎤 Starting microphone...', 'recording');
+            updateButtonState('recording');
+
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+            mediaRecorder.onstop = async () => {
+                updateStatus('🔄 Uploading and processing...', 'processing');
+                updateButtonState('processing');
+
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const formData = new FormData();
+                formData.append('audio_data', audioBlob);
+                formData.append('target_lang', targetLanguageSelect.value);
+
+                try {
+                    const response = await fetch('/translate', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        updateStatus('✅ Translation completed successfully!', 'ready');
+                        displayResults(data);
+                    } else {
+                        throw new Error(data.message || 'Translation failed');
+                    }
+                } catch (err) {
+                    updateStatus('❌ Translation failed', 'ready');
+                    showError(err.message || 'Network error occurred');
+                } finally {
+                    updateButtonState('ready');
+                }
+            };
+
+            mediaRecorder.start();
+            setTimeout(() => {
+                mediaRecorder.stop();
+                stream.getTracks().forEach(track => track.stop());
+            }, 5000); // 5 seconds
+
+        } catch (err) {
+            updateStatus('❌ Microphone error', 'ready');
+            showError(err.message || 'Microphone access denied');
+            updateButtonState('ready');
+        }
+    }
+
+    recordBtn.addEventListener('click', startRecordingAndTranslation);
+
+    targetLanguageSelect.addEventListener('change', () => {
+        const selectedLang = languageNames[targetLanguageSelect.value];
+        updateStatus(`Ready to translate to ${selectedLang}`, 'ready');
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.code === 'Space') {
+            event.preventDefault();
+            if (!recordBtn.disabled) startRecordingAndTranslation();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const selectedLang = languageNames[targetLanguageSelect.value];
+        updateStatus(`Ready to translate to ${selectedLang}`, 'ready');
+        updateButtonState('ready');
+    });
+
+    translationAudio.addEventListener('error', (e) => {
+        console.error('Audio playback error:', e);
+        translationAudio.style.display = 'none';
+    });
+translationAudio.addEventListener('loadeddata', () => {
+    console.log('Audio loaded successfully');
+    translationAudio.play(); // 🔊 Automatically play the audio
+});
+   
+</script>
+
+</body>
+</html>

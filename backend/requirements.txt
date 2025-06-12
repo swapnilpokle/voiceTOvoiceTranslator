@@ -1,0 +1,11 @@
+flask==3.0.2
+google-generativeai==0.8.4
+rank_bm25==0.2.2
+langdetect==1.0.9
+nltk==3.8.1
+faster-whisper==1.0.3
+sounddevice==0.5.1
+wavio==0.0.9
+pydub==0.25.1
+edge-tts==6.1.9
+python-dotenv==1.0.1
