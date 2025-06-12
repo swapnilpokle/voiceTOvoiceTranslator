@@ -9,3 +9,5 @@ wavio==0.0.9
 pydub==0.25.1
 edge-tts==6.1.9
 python-dotenv==1.0.1
+soundfile
+PyAudio
